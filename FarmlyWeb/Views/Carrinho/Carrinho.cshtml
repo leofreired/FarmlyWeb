@@ -1,21 +1,25 @@
-﻿<!-- Carrinho.cshtml -->
-@model List<FarmlyWeb.Models.CarrinhoItem>
+﻿@model List<FarmlyWeb.Models.CarrinhoItem>
 
 @{
     ViewData["Title"] = "Carrinho";
 }
 
-<h1>Carrinho</h1>
+<h2>Carrinho de Compras</h2>
 
-@if (Model.Any())
+@if (Model == null || !Model.Any())
+{
+    <p>Seu carrinho está vazio.</p>
+}
+else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Produto</th>
+                <th>Código do Produto</th>
+                <th>Nome do Produto</th>
                 <th>Quantidade</th>
                 <th>Preço Unitário</th>
-                <th>Preço Total</th>
+                <th>Total</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -23,6 +27,7 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>@item.ProdutoId</td>
                     <td>@item.Nome</td>
                     <td>@item.Quantidade</td>
                     <td>@item.PrecoUnitario.ToString("C")</td>
@@ -38,15 +43,9 @@
         </tbody>
     </table>
 
-    <div class="text-right">
-        <form asp-action="FinalizarCompra" method="post">
-            <button type="submit" class="btn btn-success">Finalizar Compra</button>
-        </form>
-    </div>
-}
-else
-{
-    <p>Seu carrinho está vazio.</p>
-}
+    <form asp-action="FinalizarCompra" method="post">
+        <button type="submit" class="btn btn-success">Finalizar Compra</button>
+    </form>
 
-<a asp-controller="Carrinho" asp-action="Index" class="btn btn-secondary">Voltar aos Produtos</a>
+
+}
