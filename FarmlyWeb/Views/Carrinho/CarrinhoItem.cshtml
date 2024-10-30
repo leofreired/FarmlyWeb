@@ -1,0 +1,28 @@
+﻿@model IEnumerable<CarrinhoItem>
+
+<h2>Seu Carrinho</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Preço Unitário</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.Quantidade</td>
+                <td>@item.PrecoUnitario.ToString("C")</td>
+                <td>@item.Total.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form method="post" asp-action="FinalizarCompra">
+    <button type="submit" class="btn btn-success">Finalizar Compra</button>
+</form>

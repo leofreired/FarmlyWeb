@@ -1,0 +1,38 @@
+﻿@model IEnumerable<FarmlyWeb.Models.Produto>
+
+@{
+    ViewData["Title"] = "Produtos Disponíveis";
+}
+
+<h2>Produtos Disponíveis</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Quantidade</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.Descricao</td>
+                <td>@item.Preco.ToString("C")</td>
+                <td>
+                    <form asp-controller="Carrinho" asp-action="AdicionarItem" method="post">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="number" name="quantidade" value="1" min="1" class="form-control" />
+                        <button type="submit" class="btn btn-primary mt-2">Adicionar ao Carrinho</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Carrinho" asp-action="Carrinho" class="btn btn-success">Ver Carrinho</a>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<FarmlyWeb.Models.Produto>
+
+<h2>Produtos Disponíveis</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Quantidade</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var produto in Model)
+        {
+            <tr>
+                <td>@produto.Id</td>
+                <td>@produto.Nome</td>
+                <td>@produto.Descricao</td>
+                <td>@produto.Preco.ToString("C")</td>
+                <td>
+                    <form method="post" asp-action="AdicionarItem">
+                        <input type="hidden" name="id" value="@produto.Id" />
+                        <input type="number" name="quantidade" min="1" value="1" />
+                        <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
