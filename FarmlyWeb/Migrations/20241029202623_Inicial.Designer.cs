@@ -119,8 +119,8 @@ namespace FarmlyWeb.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id_cliente");
 
-                    b.Property<decimal>("Pagamento")
-                        .HasColumnType("decimal(18,2)")
+                    b.Property<string>("FormaPagamento")
+                        .HasColumnType("string")
                         .HasColumnName("forma_pagamento");
 
                     b.Property<int>("Preco")

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FarmlyWeb.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20241030144410_Carrinho")]
-    partial class Carrinho
+    [Migration("20241102120204_AddTabelaEstoque")]
+    partial class AddTabelaEstoque
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,6 +67,37 @@ namespace FarmlyWeb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblCliente");
+                });
+
+            modelBuilder.Entity("FarmlyWeb.Models.Estoque", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id_estoque");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("data_movimentacao");
+
+                    b.Property<int>("IdProduto")
+                        .HasColumnType("int")
+                        .HasColumnName("id_produto");
+
+                    b.Property<string>("Movimentacao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("tipo_movimentacao");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int")
+                        .HasColumnName("quantidade");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblEstoque");
                 });
 
             modelBuilder.Entity("FarmlyWeb.Models.Produto", b =>

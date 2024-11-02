@@ -66,6 +66,37 @@ namespace FarmlyWeb.Migrations
                     b.ToTable("tblCliente");
                 });
 
+            modelBuilder.Entity("FarmlyWeb.Models.Estoque", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id_estoque");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("data_movimentacao");
+
+                    b.Property<int>("IdProduto")
+                        .HasColumnType("int")
+                        .HasColumnName("id_produto");
+
+                    b.Property<string>("Movimentacao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("tipo_movimentacao");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int")
+                        .HasColumnName("quantidade");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblEstoque");
+                });
+
             modelBuilder.Entity("FarmlyWeb.Models.Produto", b =>
                 {
                     b.Property<int>("Id")
@@ -116,8 +147,9 @@ namespace FarmlyWeb.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id_cliente");
 
-                    b.Property<decimal>("Pagamento")
-                        .HasColumnType("decimal(18,2)")
+                    b.Property<string>("Pagamento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("forma_pagamento");
 
                     b.Property<decimal>("Preco")

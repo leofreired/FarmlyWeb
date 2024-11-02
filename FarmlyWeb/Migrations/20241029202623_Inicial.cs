@@ -54,7 +54,7 @@ namespace FarmlyWeb.Migrations
                     id_cliente = table.Column<int>(type: "int", nullable: false),
                     data_venda = table.Column<DateTime>(type: "datetime2", nullable: false),
                     preco_total = table.Column<int>(type: "int", precision: 18, scale: 2, nullable: false),
-                    forma_pagamento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    forma_pagamento = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

@@ -27,7 +27,7 @@ namespace FarmlyWeb.Models
 
         [Column("forma_pagamento")]
         [Display(Name = "Forma de pagamento")]
-        public decimal Pagamento { get; set; }
+        public string Pagamento { get; set; }
 
         [Column("status")]
         [Display(Name = "Status do pagamento")]
