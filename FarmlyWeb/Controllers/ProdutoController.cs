@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FarmlyWeb.Models;
@@ -18,15 +15,25 @@ namespace FarmlyWeb.Controllers
             _context = context;
         }
 
-        // GET: Produto
+        // Exibir produtos somente se o cliente estiver logado
         public async Task<IActionResult> Index()
         {
+            if (!HttpContext.Session.GetInt32("ClienteId").HasValue)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
             return View(await _context.Produto.ToListAsync());
         }
 
-        // GET: Produto/Details/5
+        // Exibir detalhes de um produto específico
         public async Task<IActionResult> Details(int? id)
         {
+            if (!HttpContext.Session.GetInt32("ClienteId").HasValue)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -41,11 +48,16 @@ namespace FarmlyWeb.Controllers
             return View(produto);
         }
 
-        // POST: Produto/AdicionarAoCarrinho/5
+        // Adicionar item ao carrinho
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AdicionarAoCarrinho(int id, int quantidade)
         {
+            if (!HttpContext.Session.GetInt32("ClienteId").HasValue)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
             if (quantidade <= 0)
             {
                 return BadRequest("A quantidade deve ser maior que zero.");
@@ -57,7 +69,6 @@ namespace FarmlyWeb.Controllers
                 return NotFound();
             }
 
-            // Adicionar item ao carrinho
             var carrinho = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho") ?? new List<CarrinhoItem>();
 
             var itemExistente = carrinho.FirstOrDefault(p => p.ProdutoId == id);

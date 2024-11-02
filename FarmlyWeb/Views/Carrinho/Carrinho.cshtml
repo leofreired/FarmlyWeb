@@ -1,51 +1,42 @@
 ﻿@model List<FarmlyWeb.Models.CarrinhoItem>
 
 @{
-    ViewData["Title"] = "Carrinho";
+    ViewData["Title"] = "Carrinho de Compras";
 }
 
 <h2>Carrinho de Compras</h2>
 
-@if (Model == null || !Model.Any())
-{
-    <p>Seu carrinho está vazio.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Preço Unitário</th>
+            <th>Total</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>Código do Produto</th>
-                <th>Nome do Produto</th>
-                <th>Quantidade</th>
-                <th>Preço Unitário</th>
-                <th>Total</th>
-                <th>Ações</th>
+                <td>@item.Nome</td>
+                <td>@item.Quantidade</td>
+                <td>@item.PrecoUnitario.ToString("C")</td>
+                <td>@item.Total.ToString("C")</td>
+                <td>
+                    <form asp-action="RemoverItem" method="post" style="display: inline;">
+                        <input type="hidden" name="id" value="@item.ProdutoId" />
+                        <input type="number" name="quantidadeRemover" value="1" min="1" max="@item.Quantidade" class="form-control" style="width: 80px; display: inline;" />
+                        <button type="submit" class="btn btn-danger">Remover</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.ProdutoId</td>
-                    <td>@item.Nome</td>
-                    <td>@item.Quantidade</td>
-                    <td>@item.PrecoUnitario.ToString("C")</td>
-                    <td>@item.Total.ToString("C")</td>
-                    <td>
-                        <form asp-action="RemoverItem" method="post">
-                            <input type="hidden" name="id" value="@item.ProdutoId" />
-                            <button type="submit" class="btn btn-danger">Remover</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
 
-    <form asp-action="FinalizarCompra" method="post">
-        <button type="submit" class="btn btn-success">Finalizar Compra</button>
-    </form>
+<h3>Total: @ViewBag.Total.ToString("C")</h3>
 
-
-}
+<a asp-controller="Produto" asp-action="Index" class="btn btn-primary">Continuar Comprando</a>
+<a asp-controller="Venda" asp-action="FinalizarCompra" class="btn btn-success">Finalizar Compra</a>

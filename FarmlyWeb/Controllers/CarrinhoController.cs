@@ -13,20 +13,49 @@ public class CarrinhoController : Controller
         _context = context;
     }
 
-    // Adicionar um item ao carrinho
+    // Método para exibir o carrinho
+    public IActionResult Carrinho()
+    {
+        // Recupera o carrinho da sessão
+        var carrinho = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho") ?? new List<CarrinhoItem>();
+
+        // Calcula o total da compra
+        decimal total = carrinho.Sum(item => item.Total);
+
+        // Passa o carrinho e o total para a view
+        ViewBag.Total = total;
+        return View(carrinho);
+    }
+
+    // Adicionar um item ao carrinho com verificação de estoque
     [HttpPost]
     public IActionResult AdicionarItem(int id, int quantidade)
     {
         var produto = _context.Produto.Find(id);
-        if (produto == null || quantidade <= 0)
+        if (produto == null)
             return NotFound();
 
-        var carrinho = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho") ?? new List<CarrinhoItem>();
-        var itemExistente = carrinho.FirstOrDefault(p => p.ProdutoId == id);
+        if (quantidade <= 0)
+            return RedirectToAction("Index", "Produto", new { mensagem = "Quantidade inválida!" });
 
+        if (produto.QuantidadeEstoque < quantidade)
+        {
+            TempData["Erro"] = $"Não há estoque suficiente para {produto.Nome}. Quantidade disponível: {produto.QuantidadeEstoque}.";
+            return RedirectToAction("Index", "Produto");
+        }
+
+        var carrinho = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho") ?? new List<CarrinhoItem>();
+
+        var itemExistente = carrinho.FirstOrDefault(p => p.ProdutoId == id);
         if (itemExistente != null)
         {
-            itemExistente.Quantidade += quantidade;
+            int novaQuantidade = itemExistente.Quantidade + quantidade;
+            if (novaQuantidade > produto.QuantidadeEstoque)
+            {
+                TempData["Erro"] = $"Estoque insuficiente para adicionar {novaQuantidade} unidades de {produto.Nome}. Quantidade disponível: {produto.QuantidadeEstoque}.";
+                return RedirectToAction("Index", "Produto");
+            }
+            itemExistente.Quantidade = novaQuantidade;
         }
         else
         {
@@ -40,31 +69,34 @@ public class CarrinhoController : Controller
         }
 
         HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
+
         return RedirectToAction("Index", "Produto");
     }
 
-    // Método para exibir o carrinho
-    public IActionResult Carrinho()
-    {
-        var carrinho = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho") ?? new List<CarrinhoItem>();
-        return View(carrinho);
-    }
-
-    // Método para remover item do carrinho
+    // Método para remover uma quantidade específica de um item do carrinho
     [HttpPost]
-    public IActionResult RemoverItem(int id)
+    public IActionResult RemoverItem(int id, int quantidadeRemover)
     {
         var carrinho = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho") ?? new List<CarrinhoItem>();
-        var item = carrinho.FirstOrDefault(p => p.ProdutoId == id);
 
+        var item = carrinho.FirstOrDefault(p => p.ProdutoId == id);
         if (item != null)
         {
-            carrinho.Remove(item);
+            if (quantidadeRemover >= item.Quantidade)
+            {
+                // Remove o item completamente se a quantidade a remover é igual ou maior que a quantidade no carrinho
+                carrinho.Remove(item);
+            }
+            else
+            {
+                // Caso contrário, apenas diminui a quantidade
+                item.Quantidade -= quantidadeRemover;
+            }
+
+            // Atualiza o carrinho na sessão
+            HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
         }
 
-        HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
-        return RedirectToAction("Carrinho"); // Redireciona para a página do carrinho
+        return RedirectToAction("Carrinho");
     }
-
-    // Outros métodos permanecem inalterados
 }
