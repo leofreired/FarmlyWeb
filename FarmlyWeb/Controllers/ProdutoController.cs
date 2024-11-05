@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FarmlyWeb.Models;
@@ -15,15 +17,20 @@ namespace FarmlyWeb.Controllers
             _context = context;
         }
 
-        // Exibir produtos somente se o cliente estiver logado
-        public async Task<IActionResult> Index()
+        // Exibir produtos com funcionalidade de busca
+        public async Task<IActionResult> Index(string searchQuery)
         {
             if (!HttpContext.Session.GetInt32("ClienteId").HasValue)
             {
                 return RedirectToAction("Index", "Login");
             }
 
-            return View(await _context.Produto.ToListAsync());
+            var produtos = string.IsNullOrWhiteSpace(searchQuery)
+                ? await _context.Produto.ToListAsync()
+                : await _context.Produto.Where(p => p.Nome.Contains(searchQuery)).ToListAsync();
+
+            ViewBag.SearchQuery = searchQuery; // Para exibir o texto digitado na busca
+            return View(produtos);
         }
 
         // Exibir detalhes de um produto específico

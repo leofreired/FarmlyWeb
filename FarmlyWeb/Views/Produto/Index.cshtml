@@ -1,17 +1,16 @@
-﻿@model IEnumerable<FarmlyWeb.Models.Produto>
+﻿@model List<FarmlyWeb.Models.Produto>
 
 @{
-    ViewData["Title"] = "Produtos Disponíveis";
+    ViewData["Title"] = "Produtos";
 }
 
-<h2>Produtos Disponíveis</h2>
+<h2>Produtos</h2>
 
-@if (TempData["Erro"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["Erro"]
-    </div>
-}
+<!-- Formulário de busca -->
+<form asp-action="Index" method="get" class="form-inline mb-3">
+    <input type="text" name="searchQuery" value="@ViewBag.SearchQuery" class="form-control" placeholder="Buscar produto..." />
+    <button type="submit" class="btn btn-primary ml-2">Pesquisar</button>
+</form>
 
 <table class="table">
     <thead>
@@ -19,27 +18,24 @@
             <th>Nome</th>
             <th>Descrição</th>
             <th>Preço</th>
-            <th>Quantidade</th>
             <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var produto in Model)
         {
             <tr>
-                <td>@item.Nome</td>
-                <td>@item.Descricao</td>
-                <td>@item.Preco.ToString("C")</td>
+                <td>@produto.Nome</td>
+                <td>@produto.Descricao</td>
+                <td>@produto.Preco.ToString("C")</td>
                 <td>
-                    <form asp-action="AdicionarItem" asp-controller="Carrinho" method="post">
-                        <input type="hidden" name="id" value="@item.Id" />
-                        <input type="number" name="quantidade" value="1" min="1" class="form-control" />
-                        <button type="submit" class="btn btn-primary mt-2">Adicionar ao Carrinho</button>
+                    <form asp-action="AdicionarAoCarrinho" method="post">
+                        <input type="hidden" name="id" value="@produto.Id" />
+                        <input type="number" name="quantidade" value="1" min="1" class="form-control" style="width: 80px; display: inline;" />
+                        <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
                     </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-<a asp-controller="Carrinho" asp-action="Carrinho" class="btn btn-success">Ver Carrinho</a>

@@ -75,4 +75,32 @@ public class CarrinhoController : Controller
         HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
         return RedirectToAction("Index", "Produto");
     }
+
+    // Remover item do carrinho
+    [HttpPost]
+    public IActionResult RemoverItem(int id, int quantidade)
+    {
+        if (!HttpContext.Session.GetInt32("ClienteId").HasValue)
+        {
+            return RedirectToAction("Index", "Login");
+        }
+
+        var carrinho = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho") ?? new List<CarrinhoItem>();
+
+        var itemExistente = carrinho.FirstOrDefault(p => p.ProdutoId == id);
+        if (itemExistente != null)
+        {
+            // Subtrair a quantidade desejada
+            itemExistente.Quantidade -= quantidade;
+
+            // Remover o item se a quantidade for 0 ou menor
+            if (itemExistente.Quantidade <= 0)
+            {
+                carrinho.Remove(itemExistente);
+            }
+        }
+
+        HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
+        return RedirectToAction("Carrinho"); // Redireciona para a página do carrinho
+    }
 }
