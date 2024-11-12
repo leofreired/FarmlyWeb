@@ -1,6 +1,153 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Política de Privacidade - Farmly";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FarmlyWeb.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #f5f8f2;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        header {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #4caf50;
+        }
+
+        .container {
+            padding-top: 20px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            background-color: #4caf50;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        footer a {
+            color: #e8f5e9;
+        }
+
+            footer a:hover {
+                color: #c8e6c9;
+                text-decoration: underline;
+            }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        .navbar-light .navbar-nav .nav-link {
+            color: #e8f5e9 !important;
+        }
+
+            .navbar-light .navbar-nav .nav-link:hover {
+                color: #a5d6a7 !important;
+            }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        h3 {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .footer-icon {
+            color: #81c784;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>@ViewData["Title"]</h1>
+    </header>
+
+    <div class="container">
+        <h2>Introdução</h2>
+        <p>A Farmly valoriza a sua privacidade. Esta política explica como coletamos, usamos e protegemos suas informações pessoais enquanto você usa nossos serviços.</p>
+
+        <h2>1. Coleta de Informações</h2>
+        <p>Coletamos informações pessoais quando você se registra ou usa nossos serviços. Isso pode incluir:</p>
+        <ul>
+            <li>Informações de identificação (nome, e-mail, telefone, etc.).</li>
+            <li>Dados de uso (como interações com a plataforma e preferências).</li>
+            <li>Localização geográfica (se você permitir).</li>
+        </ul>
+
+        <h2>2. Uso das Informações</h2>
+        <p>Utilizamos suas informações para:</p>
+        <ul>
+            <li>Fornecer e melhorar os serviços.</li>
+            <li>Personalizar a sua experiência.</li>
+            <li>Processar pagamentos e transações.</li>
+            <li>Enviar atualizações e promoções.</li>
+        </ul>
+
+        <h2>3. Compartilhamento de Informações</h2>
+        <p>Não compartilhamos suas informações, exceto com:</p>
+        <ul>
+            <li>Provedores de serviços (como processadores de pagamento).</li>
+            <li>Autoridades legais, quando necessário por lei.</li>
+        </ul>
+
+        <h2>4. Segurança</h2>
+        <p>Tomamos medidas para proteger seus dados, mas não podemos garantir segurança total. Use a plataforma com consciência dos riscos.</p>
+
+        <h2>5. Seus Direitos</h2>
+        <p>Você pode acessar, corrigir ou excluir suas informações pessoais a qualquer momento, entrando em contato conosco.</p>
+
+        <h2>6. Cookies</h2>
+        <p>Utilizamos cookies para melhorar sua experiência. Você pode configurar seu navegador para bloquear cookies, mas isso pode afetar a funcionalidade do site.</p>
+
+        <h2>7. Alterações nesta Política</h2>
+        <p>Podemos atualizar esta política de tempos em tempos. Recomendamos que você a consulte regularmente.</p>
+
+        <h2>8. Contato</h2>
+        <p>Se tiver dúvidas ou solicitações, entre em contato conosco:</p>
+        <ul>
+            <li><strong>E-mail:</strong> <a href="mailto:email@farmly.com">email@farmly.com</a></li>
+            <li><strong>Endereço:</strong> Rua das Hortas, São Paulo 5000</li>
+        </ul>
+
+        <p><strong>Última atualização:</strong> 12/11/2024 </p>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Farmly. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</body>
+</html>

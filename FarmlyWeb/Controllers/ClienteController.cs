@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FarmlyWeb.Models;
 
@@ -27,17 +25,10 @@ namespace FarmlyWeb.Controllers
         // GET: Cliente/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var cliente = await _context.Cliente
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+            var cliente = await _context.Cliente.FirstOrDefaultAsync(m => m.Id == id);
+            if (cliente == null) return NotFound();
 
             return View(cliente);
         }
@@ -49,8 +40,6 @@ namespace FarmlyWeb.Controllers
         }
 
         // POST: Cliente/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Cpf,Senha,Endereco,Telefone,Email")] Cliente cliente)
@@ -59,7 +48,9 @@ namespace FarmlyWeb.Controllers
             {
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                // Redireciona para a tela de produtos após o cadastro
+                return RedirectToAction("Index", "Produto");
             }
             return View(cliente);
         }
@@ -67,30 +58,20 @@ namespace FarmlyWeb.Controllers
         // GET: Cliente/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var cliente = await _context.Cliente.FindAsync(id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+            if (cliente == null) return NotFound();
+
             return View(cliente);
         }
 
         // POST: Cliente/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cpf,Senha,Endereco,Telefone,Email")] Cliente cliente)
         {
-            if (id != cliente.Id)
-            {
-                return NotFound();
-            }
+            if (id != cliente.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -101,14 +82,8 @@ namespace FarmlyWeb.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClienteExists(cliente.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!ClienteExists(cliente.Id)) return NotFound();
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -118,17 +93,10 @@ namespace FarmlyWeb.Controllers
         // GET: Cliente/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var cliente = await _context.Cliente
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+            var cliente = await _context.Cliente.FirstOrDefaultAsync(m => m.Id == id);
+            if (cliente == null) return NotFound();
 
             return View(cliente);
         }
@@ -142,9 +110,8 @@ namespace FarmlyWeb.Controllers
             if (cliente != null)
             {
                 _context.Cliente.Remove(cliente);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

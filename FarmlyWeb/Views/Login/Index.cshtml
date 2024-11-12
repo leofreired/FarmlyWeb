@@ -1,18 +1,24 @@
-﻿@model dynamic
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
 <h2>Login</h2>
-<form asp-action="Index" method="post">
-    <div>
-        <label>CPF:</label>
-        <input type="text" name="cpf" required />
+
+<form method="post">
+    <div class="mb-3">
+        <label for="cpf" class="form-label">CPF</label>
+        <input type="text" class="form-control" id="cpf" name="cpf" required>
     </div>
-    <div>
-        <label>Senha:</label>
-        <input type="password" name="senha" required />
+    <div class="mb-3">
+        <label for="senha" class="form-label">Senha</label>
+        <input type="password" class="form-control" id="senha" name="senha" required>
     </div>
-    <button type="submit">Entrar</button>
+    <button type="submit" class="btn btn-primary">Entrar</button>
 </form>
 
 @if (ViewBag.ErrorMessage != null)
 {
-        <div style="color: red;">@ViewBag.ErrorMessage</div>
+    <div class="alert alert-danger mt-3">
+        @ViewBag.ErrorMessage
+    </div>
 }

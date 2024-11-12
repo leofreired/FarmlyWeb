@@ -7,10 +7,71 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FarmlyWeb.styles.css" asp-append-version="true" />
+    <style>
+        /* Estilos personalizados */
+        body {
+            background-color: #f5f8f2;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        .navbar-light .navbar-nav .nav-link {
+            color: #e8f5e9 !important;
+            font-weight: 500;
+        }
+
+            .navbar-light .navbar-nav .nav-link:hover {
+                color: #a5d6a7 !important;
+                text-decoration: underline;
+            }
+
+        .container {
+            padding-top: 20px;
+        }
+
+        footer {
+            background-color: #4caf50;
+            color: white;
+            height: 50px;
+            width: 721px;
+        }
+
+            footer a {
+                color: #e8f5e9;
+            }
+
+                footer a:hover {
+                    color: #c8e6c9;
+                    text-decoration: underline;
+                }
+
+        .footer-icon {
+            color: #81c784;
+        }
+        /* Estilos para botões e links */
+        .btn-primary {
+            background-color: #4caf50;
+            border-color: #4caf50;
+        }
+
+            .btn-primary:hover {
+                background-color: #388e3c;
+                border-color: #388e3c;
+            }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FarmlyWeb</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -20,15 +81,29 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Produto" asp-action="Index">Produtos</a>
+                            <a class="nav-link" asp-area="" asp-controller="Produto" asp-action="Index">Produtos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Carrinho" asp-action="Carrinho">Carrinho</a>
+                            <a class="nav-link" asp-area="" asp-controller="Carrinho" asp-action="Carrinho">Carrinho</a>
                         </li>
                     </ul>
+                    <!-- Botões de Login e Cadastro -->
+                    <div class="d-flex">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a class="btn btn-outline-light me-2" asp-controller="Login" asp-action="Logout">Logout</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-light me-2" asp-controller="Login" asp-action="Index">Login</a>
+                            <a class="btn btn-outline-light" asp-controller="Cliente" asp-action="Create">Cadastrar</a>
+                        }
+                    </div>
+
+
                 </div>
             </div>
         </nav>
@@ -39,11 +114,14 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - FarmlyWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+
+    <footer class="footer text-muted">
+        <div class="container-fluid text-center">
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">&copy; 2024 - FarmlyWeb - Privacidade</a>
         </div>
     </footer>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
