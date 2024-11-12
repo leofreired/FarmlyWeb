@@ -28,5 +28,7 @@ namespace FarmlyWeb.Models
         [Display(Name = "Preço unitário")]
         [Precision(18, 2)] // Define a precisão e a escala diretamente na propriedade
         public decimal Preco { get; set; }
+
+
     }
 }

@@ -1,0 +1,61 @@
+﻿@model FarmlyWeb.Models.VendaViewModel
+
+<h2>Finalizar Compra</h2>
+
+<form id="finalizarCompraForm">
+    <div class="form-group">
+        <label for="Pagamento">Forma de Pagamento</label>
+        <select asp-for="Pagamento" class="form-control" id="Pagamento">
+            <option value="">Selecione</option>
+            <option value="Cartão de Crédito">Cartão de Crédito</option>
+            <option value="Cartão de Débito">Cartão de Débito</option>
+            <option value="Boleto">Boleto</option>
+            <option value="Pix">Pix</option>
+            <option value="Dinheiro">Dinheiro</option>
+        </select>
+        <span asp-validation-for="Pagamento" class="text-danger"></span>
+    </div>
+
+    <button type="button" class="btn btn-success" id="confirmarCompraBtn">Confirmar Compra</button>
+</form>
+
+<script>
+    document.getElementById("confirmarCompraBtn").addEventListener("click", function () {
+        const pagamento = document.getElementById("Pagamento").value;
+
+        if (!pagamento) {
+            alert("Selecione uma forma de pagamento.");
+            return;
+        }
+
+        // Dados da venda a serem enviados
+        const vendaData = {
+            idCliente: @Model.IdCliente, // Verifique se o IdCliente está corretamente definido no model
+            dataVenda: new Date().toISOString(), // Data atual
+            precoTotal: @ViewBag.Total, // Total da compra
+            pagamento: pagamento,
+            status: 0 // Status "pendente"
+        };
+
+        // Envia os dados para a API usando fetch
+        fetch("/api/venda", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(vendaData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Compra finalizada com sucesso!");
+                    window.location.href = "/Venda/Sucesso"; // Redireciona para uma página de sucesso
+                } else {
+                    alert("Erro ao finalizar a compra.");
+                }
+            })
+            .catch(error => {
+                console.error("Erro na requisição:", error);
+                alert("Erro ao tentar finalizar a compra.");
+            });
+    });
+</script>
