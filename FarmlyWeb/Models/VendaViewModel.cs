@@ -18,7 +18,7 @@ namespace FarmlyWeb.Models
         public string Pagamento { get; set; }
 
         [Display(Name = "Status de pagamento")]
-        public int Status { get; set; }
+        public string Status { get; set; }
 
         public List<string> OpcoesPagamento { get; set; } = new List<string> { "Cartão de Crédito", "Boleto", "PIX", "Dinheiro" };
 

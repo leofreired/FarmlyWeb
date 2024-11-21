@@ -16,7 +16,7 @@ namespace FarmlyWeb.Controllers.Api
             _context = context;
         }
 
-        // POST: api/vendas
+        // POST: api/venda
         [HttpPost]
         public async Task<IActionResult> CriarVenda([FromBody] VendaDTO vendaDto)
         {

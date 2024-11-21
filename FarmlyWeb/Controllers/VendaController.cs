@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using FarmlyWeb.Models;
 using Newtonsoft.Json;
 using FarmlyWeb.DTOs;
+using System.Collections.Generic;
 
 namespace FarmlyWeb.Controllers
 {
@@ -30,15 +31,17 @@ namespace FarmlyWeb.Controllers
         }
 
         // GET: Venda/FinalizarCompra
-        public IActionResult FinalizarCompra()
+        public IActionResult FinalizarCompra(IEnumerable<CarrinhoItem> meusItens)
         {
-            var model = new VendaViewModel
+            var soma = meusItens.Sum(x => x.Total);
+
+            var model = new Venda
             {
-                IdCliente = 1, // Substitua pelo Id do cliente autenticado
+                IdCliente = HttpContext.Session.GetInt32("ClientId").GetValueOrDefault(), // Substitua pelo Id do cliente autenticado
                 DataVenda = DateTime.Now,
-                PrecoTotal = 0, // Total será calculado na view
+                Preco = soma, // Total será calculado na view
                 Pagamento = string.Empty,
-                Status = 1 // Status inicial como Pendente
+                Status = "0" // Status inicial como Pendente
             };
 
             return View(model);
@@ -46,40 +49,44 @@ namespace FarmlyWeb.Controllers
 
         // POST: Venda/FinalizarCompra
         [HttpPost]
-        public async Task<IActionResult> FinalizarCompra(VendaViewModel vendaViewModel)
+        public async Task<IActionResult> ConfirmarCompra(Venda venda)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(vendaViewModel);
+                if (!ModelState.IsValid)
+                {
+                    return View("FinalizarCompra", venda);
+                }
+
+                var vendaDto = new VendaDTO
+                {
+                    IdCliente = venda.IdCliente,
+                    DataVenda = venda.DataVenda,
+                    PrecoTotal = venda.Preco,
+                    Pagamento = venda.Pagamento,
+                    Status = venda.Status
+                };
+
+                var jsonContent = new StringContent(JsonConvert.SerializeObject(vendaDto), Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync("api/venda", jsonContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index", "Produto");
+                }
+                else
+                {
+                    ViewData["ErrorMessage"] = "Ocorreu um erro ao finalizar a compra. Tente novamente.";
+                    return View("FinalizarCompra", venda);
+                }
             }
-
-            // Monta o objeto DTO para enviar à API
-            var vendaDto = new VendaDTO
+            catch (Exception)
             {
-                IdCliente = vendaViewModel.IdCliente,
-                DataVenda = vendaViewModel.DataVenda,
-                PrecoTotal = vendaViewModel.PrecoTotal,
-                Pagamento = vendaViewModel.Pagamento,
-                Status = vendaViewModel.Status
-            };
-
-            // Serializa o objeto para JSON
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(vendaDto), Encoding.UTF8, "application/json");
-
-            // Faz a chamada POST para a API de vendas
-            var response = await _httpClient.PostAsync("api/venda", jsonContent);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Carrinho"); // Redireciona após a compra ser finalizada com sucesso
-            }
-            else
-            {
-                // Exibe erro se houver problema ao finalizar a compra
-                ModelState.AddModelError(string.Empty, "Ocorreu um erro ao finalizar a compra. Tente novamente.");
-                return View(vendaViewModel);
+                return View("FinalizarCompra", venda);
             }
         }
+
 
         // GET: Venda/Details/5
         public async Task<IActionResult> Details(int? id)

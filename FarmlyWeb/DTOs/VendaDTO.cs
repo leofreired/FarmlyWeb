@@ -6,6 +6,6 @@
         public DateTime DataVenda { get; set; }
         public decimal PrecoTotal { get; set; }
         public string Pagamento { get; set; }
-        public int Status { get; set; }
+        public string Status { get; set; }
     }
 }

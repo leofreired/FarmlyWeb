@@ -1,47 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using FarmlyWeb.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+﻿using FarmlyWeb.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
-namespace FarmlyWeb.Controllers
+public class LoginController : Controller
 {
-    public class LoginController : Controller
+    private readonly Contexto _context;
+
+    public LoginController(Contexto context)
     {
-        private readonly Contexto _context;
+        _context = context;
+    }
 
-        public LoginController(Contexto context)
+    [HttpGet]
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Index(string cpf, string senha)
+    {
+        // Busca o cliente no banco de dados pelo CPF e senha
+        var cliente = _context.Clientes.FirstOrDefault(c => c.CPF == cpf && c.Senha == senha);
+
+        if (cliente != null)
         {
-            _context = context;
+            // Armazena informações na sessão
+            HttpContext.Session.SetInt32("ClienteId", cliente.Id);
+            HttpContext.Session.SetString("ClienteNome", cliente.Nome);
+            HttpContext.Session.SetString("ClienteCPF", cliente.CPF);
+
+            return RedirectToAction("Index", "Home");
         }
 
-        // GET: Login
-        public IActionResult Index()
-        {
-            return View();
-        }
+        // Caso falhe, exibe mensagem de erro
+        ViewBag.Erro = "CPF ou senha inválidos!";
+        return View();
+    }
 
-        // POST: Login
-        [HttpPost]
-        public async Task<IActionResult> Index(string cpf, string senha)
-        {
-            var cliente = await _context.Cliente
-                .FirstOrDefaultAsync(c => c.Cpf == cpf && c.Senha == senha);
-
-            if (cliente != null)
-            {
-                HttpContext.Session.SetInt32("ClienteId", cliente.Id);  // Salva o Id do cliente na sessão
-                return RedirectToAction("Index", "Produto");
-            }
-
-            ViewBag.ErrorMessage = "CPF ou senha incorretos.";
-            return View();
-        }
-
-        // Logout
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Remove("ClienteId");
-            return RedirectToAction("Index", "Login");
-        }
+    public IActionResult Logout()
+    {
+        // Limpa a sessão ao sair
+        HttpContext.Session.Clear();
+        return RedirectToAction("Index", "Home");
     }
 }

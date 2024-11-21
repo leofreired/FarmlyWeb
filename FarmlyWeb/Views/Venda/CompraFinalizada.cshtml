@@ -1,0 +1,11 @@
+﻿@model FarmlyWeb.Models.Venda
+
+<h2>Compra Finalizada</h2>
+
+
+@if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}

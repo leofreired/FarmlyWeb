@@ -1,11 +1,22 @@
-﻿@model FarmlyWeb.Models.VendaViewModel
+﻿@model FarmlyWeb.Models.Venda
 
 <h2>Finalizar Compra</h2>
 
-<form id="finalizarCompraForm">
+<form asp-action="ConfirmarCompra" method="post">
+    <!-- Campo oculto para IdCliente -->
+    @Html.HiddenFor(model => model.IdCliente)
+
+    <!-- Campo oculto para DataVenda -->
+    @Html.HiddenFor(model => model.DataVenda)
+
+    <!-- Campo oculto para Preco -->
+    @Html.HiddenFor(model => model.Preco)
+
+    <!-- Campo oculto para Status -->
+    @Html.HiddenFor(model => model.Status)
     <div class="form-group">
         <label for="Pagamento">Forma de Pagamento</label>
-        <select asp-for="Pagamento" class="form-control" id="Pagamento">
+        <select asp-for="Pagamento" class="form-control" id="Pagamento" required>
             <option value="">Selecione</option>
             <option value="Cartão de Crédito">Cartão de Crédito</option>
             <option value="Cartão de Débito">Cartão de Débito</option>
@@ -16,57 +27,12 @@
         <span asp-validation-for="Pagamento" class="text-danger"></span>
     </div>
 
-    <button type="button" class="btn btn-success" id="confirmarCompraBtn">Confirmar Compra</button>
+    <button type="submit" class="btn btn-success" id="confirmarCompraBtn">Confirmar Compra</button>
 </form>
 
-<script>
-    // Espera o carregamento completo da página
-    document.addEventListener("DOMContentLoaded", function () {
-        // Adiciona o evento de clique no botão de confirmar compra
-        document.getElementById("confirmarCompraBtn").addEventListener("click", function () {
-            console.log("Botão de confirmar compra foi clicado");
-
-            // Obtém o valor do campo de pagamento
-            const pagamento = document.getElementById("Pagamento").value;
-
-            // Verifica se foi selecionado um pagamento
-            if (!pagamento) {
-                alert("Selecione uma forma de pagamento.");
-                return;
-            }
-
-            // Monta os dados para enviar à API
-            const vendaData = {
-                idCliente: @Model.IdCliente, // ID do cliente
-                dataVenda: new Date().toISOString(), // Data atual
-                precoTotal: @ViewBag.Total, // Total da compra
-                pagamento: pagamento,
-                status: 0 // Status "pendente"
-            };
-
-            console.log("Enviando dados para a API: ", vendaData);
-
-            // Envia os dados para a API usando fetch
-            fetch("/api/venda", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(vendaData)
-            })
-                .then(response => {
-                    console.log("Resposta da API: ", response);
-                    if (response.ok) {
-                        alert("Compra finalizada com sucesso!");
-                        window.location.href = "/Venda/Sucesso"; // Redireciona para uma página de sucesso
-                    } else {
-                        alert("Erro ao finalizar a compra.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro na requisição:", error);
-                    alert("Erro ao tentar finalizar a compra.");
-                });
-        });
-    });
-</script>
+@if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
