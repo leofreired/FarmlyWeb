@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -90,10 +92,13 @@
                             <a class="nav-link" asp-area="" asp-controller="Carrinho" asp-action="Carrinho">Carrinho</a>
                         </li>
                     </ul>
-                    <!-- Botões de Login e Cadastro -->
-                    <div class="d-flex">
-                        @if (User.Identity.IsAuthenticated)
+                    <!-- Exibe informações do cliente logado -->
+                    <div class="d-flex align-items-center">
+                        @if (HttpContextAccessor.HttpContext.Session.GetInt32("ClienteId") != null)
                         {
+                            <span class="text-light me-3">
+                                Bem-vindo, @HttpContextAccessor.HttpContext.Session.GetString("ClienteNome")!
+                            </span>
                             <a class="btn btn-outline-light me-2" asp-controller="Login" asp-action="Logout">Logout</a>
                         }
                         else
@@ -102,7 +107,6 @@
                             <a class="btn btn-outline-light" asp-controller="Cliente" asp-action="Create">Cadastrar</a>
                         }
                     </div>
-
 
                 </div>
             </div>
@@ -113,15 +117,11 @@
             @RenderBody()
         </main>
     </div>
-
-
-
     <footer class="footer text-muted">
         <div class="container-fluid text-center">
             <a asp-area="" asp-controller="Home" asp-action="Privacy">&copy; 2024 - FarmlyWeb - Privacidade</a>
         </div>
     </footer>
-    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

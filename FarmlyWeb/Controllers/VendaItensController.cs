@@ -9,7 +9,7 @@ using FarmlyWeb.Models;
 
 namespace FarmlyWeb.Controllers
 {
-    public class VendaItensController : Controller
+    public class VendaItensController : BaseController
     {
         private readonly Contexto _context;
 

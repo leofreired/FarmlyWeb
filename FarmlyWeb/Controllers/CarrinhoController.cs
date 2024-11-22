@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FarmlyWeb.Extensions;
 
-public class CarrinhoController : Controller
+public class CarrinhoController : BaseController
 {
     private readonly Contexto _context;
 

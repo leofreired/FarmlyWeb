@@ -14,8 +14,6 @@ namespace FarmlyWeb.Models
         public DbSet<VendaItens> VendaItens { get; set; }
         public DbSet<Produto> Produto { get; set; }
         public DbSet<Estoque> Estoque { get; set; }
-
-
     }
 
 

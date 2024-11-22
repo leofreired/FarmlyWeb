@@ -7,7 +7,7 @@ using FarmlyWeb.Models;
 
 namespace FarmlyWeb.Controllers
 {
-    public class ClienteController : Controller
+    public class ClienteController : BaseController
     {
         private readonly Contexto _context;
 

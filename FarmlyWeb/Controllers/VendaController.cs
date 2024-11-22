@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace FarmlyWeb.Controllers
 {
-    public class VendaController : Controller
+    public class VendaController : BaseController
     {
         private readonly Contexto _context;
         private readonly HttpClient _httpClient;
@@ -33,19 +33,29 @@ namespace FarmlyWeb.Controllers
         // GET: Venda/FinalizarCompra
         public IActionResult FinalizarCompra(IEnumerable<CarrinhoItem> meusItens)
         {
+            var clienteId = HttpContext.Session.GetInt32("ClienteId");
+
+            if (clienteId == null || clienteId == 0)
+            {
+                // Redireciona para o login caso o cliente não esteja autenticado
+                return RedirectToAction("Index", "Login");
+            }
+
             var soma = meusItens.Sum(x => x.Total);
 
-            var model = new Venda
+            var Venda = new Venda
             {
-                IdCliente = HttpContext.Session.GetInt32("ClientId").GetValueOrDefault(), // Substitua pelo Id do cliente autenticado
+                IdCliente = clienteId.Value,
                 DataVenda = DateTime.Now,
-                Preco = soma, // Total será calculado na view
+                Preco = soma,
                 Pagamento = string.Empty,
                 Status = "0" // Status inicial como Pendente
             };
 
-            return View(model);
+            Console.WriteLine($"ClienteId: {Venda.IdCliente}");
+            return View(Venda);
         }
+
 
         // POST: Venda/FinalizarCompra
         [HttpPost]

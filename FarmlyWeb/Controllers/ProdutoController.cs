@@ -8,7 +8,7 @@ using FarmlyWeb.Extensions;
 
 namespace FarmlyWeb.Controllers
 {
-    public class ProdutoController : Controller
+    public class ProdutoController : BaseController
     {
         private readonly Contexto _context;
 
@@ -58,33 +58,37 @@ namespace FarmlyWeb.Controllers
         // Adicionar item ao carrinho
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AdicionarAoCarrinho(int id, int quantidade)
+        [HttpPost]
+        public IActionResult AdicionarAoCarrinho(int idProduto, int quantidade)
         {
-            if (!HttpContext.Session.GetInt32("ClienteId").HasValue)
-            {
-                return RedirectToAction("Index", "Login");
-            }
+            var produto = _context.Produto.FirstOrDefault(p => p.Id == idProduto);
 
-            if (quantidade <= 0)
-            {
-                return BadRequest("A quantidade deve ser maior que zero.");
-            }
-
-            var produto = _context.Produto.Find(id);
             if (produto == null)
             {
-                return NotFound();
+                TempData["MensagemErro"] = "Produto não encontrado.";
+                return RedirectToAction("Index", "Produto");
             }
 
+            // Verifica se a quantidade solicitada está disponível no estoque
+            if (quantidade > produto.QuantidadeEstoque)
+            {
+                TempData["MensagemErro"] = $"Quantidade solicitada ({quantidade}) excede o estoque disponível ({produto.QuantidadeEstoque}).";
+                return RedirectToAction("Index", "Produto");
+            }
+
+            // Lista local para o carrinho (simulando uma sessão ou armazenamento em memória)
             var carrinho = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho") ?? new List<CarrinhoItem>();
 
-            var itemExistente = carrinho.FirstOrDefault(p => p.ProdutoId == id);
+            // Verifica se o produto já existe no carrinho
+            var itemExistente = carrinho.FirstOrDefault(c => c.ProdutoId == idProduto);
             if (itemExistente != null)
             {
+                // Atualiza a quantidade do item existente
                 itemExistente.Quantidade += quantidade;
             }
             else
             {
+                // Adiciona um novo item ao carrinho
                 carrinho.Add(new CarrinhoItem
                 {
                     ProdutoId = produto.Id,
@@ -94,8 +98,18 @@ namespace FarmlyWeb.Controllers
                 });
             }
 
+            // Atualiza o estoque do produto
+            produto.QuantidadeEstoque -= quantidade;
+
+            // Salva o carrinho na sessão
             HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
-            return RedirectToAction("Index");
+
+            // Salva as alterações no banco de dados
+            _context.SaveChanges();
+
+            TempData["MensagemSucesso"] = "Produto adicionado ao carrinho com sucesso!";
+            return RedirectToAction("Index", "Produto");
         }
+
     }
 }

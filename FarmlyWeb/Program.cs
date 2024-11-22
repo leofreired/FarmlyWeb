@@ -26,6 +26,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// Adicionar suporte ao HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // Configuração do pipeline HTTP

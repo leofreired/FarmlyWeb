@@ -12,13 +12,27 @@
     <button type="submit" class="btn btn-primary ml-2">Pesquisar</button>
 </form>
 
+<!-- Exibe mensagens de sucesso ou erro -->
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["MensagemSucesso"]
+    </div>
+}
+@if (TempData["MensagemErro"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["MensagemErro"]
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
             <th>Nome</th>
             <th>Descrição</th>
             <th>Preço</th>
-            <th>Ações</th>
+            <th>Selecionar quantidade:</th>
         </tr>
     </thead>
     <tbody>
@@ -27,11 +41,11 @@
             <tr>
                 <td>@produto.Nome</td>
                 <td>@produto.Descricao</td>
-                <td>@produto.Preco.ToString("C")</td>
+                <td>R$ @produto.Preco.ToString("F2")</td>               
                 <td>
-                    <form asp-action="AdicionarAoCarrinho" method="post">
-                        <input type="hidden" name="id" value="@produto.Id" />
-                        <input type="number" name="quantidade" value="1" min="1" class="form-control" style="width: 80px; display: inline;" />
+                    <form asp-action="AdicionarAoCarrinho" asp-controller="Produto" method="post">
+                        <input type="hidden" name="idProduto" value="@produto.Id" />
+                        <input type="number" name="quantidade" value="1" min="1" class="form-control mb-2" />
                         <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
                     </form>
                 </td>
@@ -39,3 +53,4 @@
         }
     </tbody>
 </table>
+
