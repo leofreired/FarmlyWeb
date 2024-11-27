@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Adiciona serviços ao contêiner
 builder.Services.AddControllersWithViews();
 
-// Configura o contexto do banco de dados
+// Configura o contexto do banco de dados - lembrar de alterar!!!!
 builder.Services.AddDbContext<Contexto>(options =>
     options.UseSqlServer("Data Source=DESKTOP-MKPA54J;Initial Catalog=PIM_FAZENDA_URBANA;Integrated Security=True;Encrypt=False"));
 
@@ -26,7 +26,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Adicionar suporte ao HttpContextAccessor
+// Adicionarr suporte ao HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -48,12 +48,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Habilitar a sessão
+// Habilitar a sesssão U.u ;)
 app.UseSession();
 
 app.UseAuthorization();
 
-// Mapear rotas de controladoras MVC e API
+// Mapear rotas de controladoras MVC e API U.u
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

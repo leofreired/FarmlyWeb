@@ -8,4 +8,5 @@
         public string Pagamento { get; set; }
         public string Status { get; set; }
     }
+
 }

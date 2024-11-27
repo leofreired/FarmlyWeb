@@ -8,6 +8,8 @@ using FarmlyWeb.Models;
 using Newtonsoft.Json;
 using FarmlyWeb.DTOs;
 using System.Collections.Generic;
+using FarmlyWeb.Extensions;
+using FarmlyWeb.Migrations;
 
 namespace FarmlyWeb.Controllers
 {
@@ -20,7 +22,7 @@ namespace FarmlyWeb.Controllers
         {
             _context = context;
             _httpClient = new HttpClient();
-            // Configure a URL base da sua API aqui
+            // Inserir a URL da API aqui
             _httpClient.BaseAddress = new Uri("https://localhost:7186/");
         }
 
@@ -31,17 +33,20 @@ namespace FarmlyWeb.Controllers
         }
 
         // GET: Venda/FinalizarCompra
-        public IActionResult FinalizarCompra(IEnumerable<CarrinhoItem> meusItens)
+       
+        public IActionResult FinalizarCompra()
         {
             var clienteId = HttpContext.Session.GetInt32("ClienteId");
 
             if (clienteId == null || clienteId == 0)
             {
-                // Redireciona para o login caso o cliente não esteja autenticado
+                // Redireciona para o login se o cliente não esteja autenticado
                 return RedirectToAction("Index", "Login");
             }
 
-            var soma = meusItens.Sum(x => x.Total);
+            var meusItens = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho");
+
+            var soma = meusItens.Sum(x => x.Quantidade * x.PrecoUnitario);
 
             var Venda = new Venda
             {
@@ -54,6 +59,11 @@ namespace FarmlyWeb.Controllers
 
             Console.WriteLine($"ClienteId: {Venda.IdCliente}");
             return View(Venda);
+        }
+
+        public IActionResult Sucesso()
+        {
+            return View();
         }
 
 
@@ -79,11 +89,17 @@ namespace FarmlyWeb.Controllers
 
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(vendaDto), Encoding.UTF8, "application/json");
 
+                // itens do carrinho para colocar no venda itens
+
+                var meusItens = HttpContext.Session.GetObjectFromJson<List<CarrinhoItem>>("Carrinho");
+
                 var response = await _httpClient.PostAsync("api/venda", jsonContent);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index", "Produto");
+                    HttpContext.Session.Remove("Carrinho");
+
+                    return RedirectToAction("Sucesso");
                 }
                 else
                 {

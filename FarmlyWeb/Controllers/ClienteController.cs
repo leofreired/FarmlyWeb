@@ -19,7 +19,7 @@ namespace FarmlyWeb.Controllers
         // GET: Cliente
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cliente.ToListAsync());
+            return View();
         }
 
         // GET: Cliente/Details/5
@@ -34,9 +34,10 @@ namespace FarmlyWeb.Controllers
         }
 
         // GET: Cliente/Create
+        [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: Cliente/Create
@@ -48,6 +49,10 @@ namespace FarmlyWeb.Controllers
             {
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
+
+                HttpContext.Session.SetInt32("ClienteId", cliente.Id);
+                HttpContext.Session.SetString("ClienteNome", cliente.Nome);
+                HttpContext.Session.SetString("ClienteCPF", cliente.Cpf);
 
                 // Redireciona para a tela de produtos após o cadastro
                 return RedirectToAction("Index", "Produto");

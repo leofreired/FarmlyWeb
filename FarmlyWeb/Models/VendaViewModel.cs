@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace FarmlyWeb.Models
+/* namespace FarmlyWeb.Models
 {
     public class VendaViewModel
     {
@@ -25,3 +25,5 @@ namespace FarmlyWeb.Models
         public List<CarrinhoItem> ItensVenda { get; set; } = new List<CarrinhoItem>();
     }
 }
+
+*/

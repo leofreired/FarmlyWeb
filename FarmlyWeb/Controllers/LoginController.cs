@@ -18,6 +18,12 @@ public class LoginController : BaseController
         return View();
     }
 
+    // GET: Cliente/Create
+    public IActionResult Create()
+    {
+        return View("Create");
+    }
+
     [HttpPost]
     public IActionResult Index(string cpf, string senha)
     {
@@ -34,7 +40,7 @@ public class LoginController : BaseController
             return RedirectToAction("Index", "Home");
         }
 
-        // Caso falhe, exibe mensagem de erro
+        // Caso falhe, exibe uma mensagenzinha de erro (é para aparecer)
         ViewBag.Erro = "CPF ou senha inválidos!";
         return View();
     }
