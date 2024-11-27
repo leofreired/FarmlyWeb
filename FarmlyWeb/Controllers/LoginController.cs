@@ -40,9 +40,9 @@ public class LoginController : BaseController
             return RedirectToAction("Index", "Home");
         }
 
-        // Caso falhe, exibe uma mensagenzinha de erro (é para aparecer)
-        ViewBag.Erro = "CPF ou senha inválidos!";
-        return View();
+        // Armazena a mensagem de erro no TempData
+        TempData["Erro"] = "CPF ou senha inválidos!";
+        return RedirectToAction("Index");
     }
 
     public IActionResult Logout()

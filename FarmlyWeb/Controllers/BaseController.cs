@@ -14,6 +14,13 @@ public class BaseController : Controller
 
         if (!naoAutenticadas.Contains(rotaAtual))
         {
+            // Se houver uma mensagem de erro, exibir antes de redirecionar
+            if (TempData["Erro"] != null)
+            {
+                context.Result = View("Index", TempData["Erro"]);
+                return;
+            }
+
             if (HttpContext.Session.GetInt32("ClienteId") == null)
             {
                 // Redireciona para o login
